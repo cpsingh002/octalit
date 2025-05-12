@@ -12,5 +12,6 @@ Auth::routes();
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 
-//All crud opteration routes 
-Route::resource('products', ProductController::class);
+// Route::group(['middleware'=>['auth:sanctum']],function(){
+    Route::resource('products', ProductController::class);
+// });
