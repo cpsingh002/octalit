@@ -15,18 +15,12 @@ class ProductController extends Controller
      */
     public function index(Request $request)
     {
-        $products = Product::all();
-       
-        // Return a different response format based on the route type
-        if ($request->is('api/*')) {
-             return response()->json([
-                        'status' => true,
-                        'result'=>$products
-                    ], 200);
-        }else{
-
-            return view('product.list',['products'=>$products]);
-        }
+        $products = Product::all();  
+            return response()->json([
+                'status' => true,
+                'message' => 'Products retrieved successfully',
+                'data' => $products
+            ], 200);
     }
 
     /**
@@ -34,13 +28,7 @@ class ProductController extends Controller
      */
     public function create(Request $request)
     {
-     
-        // Return a different response format based on the route type
-        if ($request->is('api/*')) {
-             return response()->json(['status' => true,'message'=>'Add new product!' ], 200);
-        } else {
-               return view('product.add');
-        }
+        return response()->json(['status' => true,'message'=>'Add new product!'], 200);   
     }
 
     /**
@@ -48,7 +36,7 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        $validated = $request->validate([
+        $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'slug'=>'required|string|unique:products,slug',
             'short_description'=>'nullable|string|max:500',
@@ -88,13 +76,16 @@ class ProductController extends Controller
             'image.mimes' => 'The image must be a file of type: jpeg, jpg, png.',
         ]);
 
-        $product = Product::create($validated);
-        // Return a different response format based on the route type
-        if ($request->is('api/*')) {
-           return response()->json(['status' => true,'message'=>'Add Product added Sucesfully!' ], 201);
-        } else {
-            return redirect()->back()->with('meesage','Add Product added Sucesfully!');
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Validation error',
+                'errors' => $validator->errors()
+            ], 422);
         }
+        $product = Product::create($validated);
+        return response()->json(['status' => true,'message' => 'Product created successfully', 'result'=>$product], 201);
     }
 
     /**
@@ -103,12 +94,7 @@ class ProductController extends Controller
     public function show(Request $request,string $id)
     {
         $product = Product::findOrFail($id);
-        // Return a different response format based on the route type
-        if ($request->is('api/*')) {
-           return response()->json(['status' => true,'result'=>$product ], 200);
-        } else {
-            return view('product.show',['product'=>$product]);
-        }
+        return response()->json(['status' => true,'message' => 'Product found successfully','result'=>$product ], 200);
     }
 
     /**
@@ -116,14 +102,9 @@ class ProductController extends Controller
      */
     public function edit(Request $request,string $id)
     {
-        $product = Product::findOrFail($id);
-        return view('product.edit',['product'=>$product]);
-        // Return a different response format based on the route type
-        if ($request->is('api/*')) {
-            return response()->json(['status' => true,'result'=>$product ], 200);
-        } else {
-            return view('product.edit', ['product'=>$product]);
-        }
+        $product = Product::findOrFail($id);    
+        return response()->json(['status' => true,'message' => 'Product found successfully','result'=>$product ], 200);
+       
 
     }
 
@@ -132,7 +113,7 @@ class ProductController extends Controller
      */
     public function update(Request $request, string $id)
     {
-         $validated = $request->validate([
+        $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'slug'=>'required|string|unique:products,slug,'.$id,
             'short_description'=>'nullable|string|max:500',
@@ -169,6 +150,13 @@ class ProductController extends Controller
             'image.mimes' => 'The image must be a file of type: jpeg, jpg, png.',
         ]);
 
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Validation error',
+                'errors' => $validator->errors()
+            ], 422);
+        }
 
         $product = Product::findOrFail($id);
         $product->update([
@@ -179,19 +167,15 @@ class ProductController extends Controller
             'regular_price' => $request->regular_price,
             'sale_price' => $request->sale_price,
             'quantity' => $request->quantity,
-            // If an image is provided, you can handle the image upload here
             'image' => $request->hasFile('image') ? $request->file('image')->store('products') : $product->image,
         ]);
 
-        return response()->json($product);
-        // Return a different response format based on the route type
-        if ($request->is('api/*')) {
-            // API response, typically JSON
-            return response()->json($data, 200);
-        } else {
-            // Web response, typically a view or custom response
-            return response()->view('welcome', $data);
-        }
+        return response()->json([
+            'status' => true,
+            'message' => 'Product updated successfully',
+            'result' => $product
+        ], 200);
+        
     }
 
     /**
@@ -202,14 +186,9 @@ class ProductController extends Controller
         $product = Product::findOrFail($id);
         $product->delete();
 
-        return response()->json(['message' => 'Product deleted successfully']);
-        // Return a different response format based on the route type
-        if ($request->is('api/*')) {
-            // API response, typically JSON
-            return response()->json($data, 200);
-        } else {
-            // Web response, typically a view or custom response
-            return response()->view('welcome', $data);
-        }
+        return response()->json([
+            'status' => true,
+            'message' => 'Product deleted successfully'
+        ], 204);
     }
 }
