@@ -85,8 +85,23 @@ class ProductsController extends Controller
                 'errors' => $validator->errors()
             ], 422);
         }
-        $product = Product::create($validator);
-        return response()->json(['status' => true,'message' => 'Product created successfully', 'result'=>$product], 201);
+
+        $model = new Product();
+        $model->name = $request->name;
+        $model->slug = $request->slug;
+        $model->short_description = $request->short_description;
+        $model->description = $request->description;
+        $model->regular_price = $request->regular_price;
+        $model->sale_price = $request->sale_price;
+        $model->quantity = $request->quantity;
+        if($request->hasfile('image'));{
+            $imageName= Carbon::now()->timestamp. rand(1, 99) .';.'.$request->image->extension();
+            $request->file('image')->storeAs('images',$imageName);
+            $model->image = $imageName;
+        }     
+        $model->save();
+        
+        return response()->json(['status' => true,'message' => 'Product created successfully', 'result'=>$model], 201);
     }
 
     /**
@@ -158,7 +173,11 @@ class ProductsController extends Controller
                 'errors' => $validator->errors()
             ], 422);
         }
-
+        if($request->hasfile('image'));{
+            $imageName= Carbon::now()->timestamp. rand(1, 99) .';.'.$request->image->extension();
+            $request->file('image')->storeAs('images',$imageName);
+            // $model->image = $imageName;
+        }   
         $product = Product::findOrFail($id);
         $product->update([
             'name' => $request->name,
@@ -168,7 +187,7 @@ class ProductsController extends Controller
             'regular_price' => $request->regular_price,
             'sale_price' => $request->sale_price,
             'quantity' => $request->quantity,
-            'image' => $request->hasFile('image') ? $request->file('image')->store('products') : $product->image,
+            'image' => $request->hasFile('image') ? $imageName : $product->image,
         ]);
 
         return response()->json([

@@ -1,0 +1,329 @@
+{
+	"info": {
+		"_postman_id": "4a02db92-eaa1-4a3d-af01-3b543633496c",
+		"name": "New Collection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "27869204"
+	},
+	"item": [
+		{
+			"name": "login",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "email",
+							"value": "admin@admin.com",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "Admin@123..",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{baseurl}}api/auth/login",
+					"host": [
+						"{{baseurl}}api"
+					],
+					"path": [
+						"auth",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "product list",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseurl}}api/products",
+					"host": [
+						"{{baseurl}}api"
+					],
+					"path": [
+						"products"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "product store",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "name",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "slug",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "short_description",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "description",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "regular_price",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "sale_price",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "quantity",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "image",
+							"type": "file",
+							"src": []
+						}
+					]
+				},
+				"url": {
+					"raw": "{{baseurl}}api/products",
+					"host": [
+						"{{baseurl}}api"
+					],
+					"path": [
+						"products"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "product show",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseurl}}api/products/2",
+					"host": [
+						"{{baseurl}}api"
+					],
+					"path": [
+						"products",
+						"2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "edit product",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"url": {
+					"raw": "{{baseurl}}api/products/2/edit",
+					"host": [
+						"{{baseurl}}api"
+					],
+					"path": [
+						"products",
+						"2",
+						"edit"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "product update",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "name",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "slug",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "short_description",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "description",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "regular_price",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "sale_price",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "quantity",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "image",
+							"type": "file",
+							"src": []
+						}
+					]
+				},
+				"url": {
+					"raw": "{{baseurl}}api/products/2",
+					"host": [
+						"{{baseurl}}api"
+					],
+					"path": [
+						"products",
+						"2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "product delete",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseurl}}/api/products/1",
+					"host": [
+						"{{baseurl}}"
+					],
+					"path": [
+						"api",
+						"products",
+						"1"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "1|nsRekBpjVwz5NDypHibsy9MQcvELvz4pAxM0QByx428a18fc",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseurl",
+			"value": "http://127.0.0.1:8000/",
+			"type": "string"
+		}
+	]
+}

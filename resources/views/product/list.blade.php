@@ -33,33 +33,38 @@
                         <tr>
                             <th scope="col">SN</th>
                             <th scope="col">Name</th>
-                            <th scope="col">Email</th>
-                            <th scope="col">Phone</th>
-                            <th scope="col">Subject</th>
-                            <th scope="col">Message</th>
-                            <th scope="col">Time</th>
-                            <!-- <th scope="col">Mail Reply</th> -->
-                            <!-- <th scope="col">Action</th> -->
+                            <th scope="col">Slug</th>
+                            <th scope="col">Regular Price</th>
+                            <th scope="col">Sale Price</th>
+                            <th scope="col">Quantity</th>
+                            <th scope="col">Image</th>
+                            <th scope="col">Action</th>
                         </tr>
                     </thead>
                     <tbody>
                         @php $sn=1; @endphp
-                        @foreach($contantforms as $list)
-                            <tr  ed="{{$list->subject}}" df="{{$list->email}}" id="{{$list->id}}">
+                        @foreach($products as $list)
+                            <tr>
                                 <td>{{$sn++}}</td>
                                 <td>{{$list->name}}</td>
-                                <td>{{$list->email}}</td>
-                                <td>{{$list->phone}}</td>
-                                <td>{{$list->subject}}</td>
-                                <td>{{$list->msg}}</td>
-                                <td>{{ \Carbon\Carbon::parse($list->created_at)->format('M d Y g:i A')}}</td>
-                                <!-- <td>@if($list->resend_mail ==1) <span class="check-right"><i class="bi bi-check fs-18"></i></span> @endif</td> -->
-                                <!-- <td>
-                                    <button class="btn btn-primary modal_btn_approved">Reply Mail</button>
-                                    <a href="#">
-                                        <button type="button" class="btn btn-secondary mt-1">History</button>
-                                    </a>
-                                </td>                         -->
+                                <td>{{$list->slug}}</td>
+                                <td>{{$list->regular_price}}</td>
+                                <td>{{$list->sale_price}}</td>
+                                <td>{{$list->quantity}}</td>
+                                <td>@if($list->image !='')
+                                    <img width="100px" src="{{asset('admin/images/'.$list->image)}}"/>
+                                    @else
+                                        <p>null</p>
+                                    @endif
+                                </td>
+                                <td>
+                                    <a href="{{route('products.edit',$list->id)}}"><button type="button" class="btn btn-danger mt-1">Edit</button></a>
+                                    <form action="{{ route('products.destroy', $list->id) }}" method="POST">
+                                        @method('DELETE')
+                                        @csrf
+                                        <input type="submit" class="btn btn-dark mt-1" value="Delete" onclick="return confirm('Are you sure want to delete this product?.');" />
+                                    </form>
+                                </td>                        
                             </tr>
                         @endforeach
                     </tbody>

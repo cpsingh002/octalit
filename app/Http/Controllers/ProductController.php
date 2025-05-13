@@ -24,7 +24,7 @@ class ProductController extends Controller
      */
     public function create(Request $request)
     {
-        return view('product.add');
+        return view('product.create');
     }
 
     /**
@@ -32,6 +32,7 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
+        // dd($request);
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'slug'=>'required|string|unique:products,slug',
@@ -72,10 +73,23 @@ class ProductController extends Controller
             'image.mimes' => 'The image must be a file of type: jpeg, jpg, png.',
         ]);
 
-
+                
         
-        $product = Product::create($validated);
-        return redirect()->back()->with('meesage','Product created successfully!');
+        $model = new Product();
+        $model->name = $request->name;
+        $model->slug = $request->slug;
+        $model->short_description = $request->short_description;
+        $model->description = $request->description;
+        $model->regular_price = $request->regular_price;
+        $model->sale_price = $request->sale_price;
+        $model->quantity = $request->quantity;
+        if($request->hasfile('image'));{
+            $imageName= Carbon::now()->timestamp. rand(1, 99) .';.'.$request->image->extension();
+            $request->file('image')->storeAs('images',$imageName);
+            $model->image = $imageName;
+        }     
+        $model->save();
+        return redirect()->back()->with('message','Product created successfully!');
     }
 
     /**
@@ -102,6 +116,7 @@ class ProductController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        // dd($request);
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'slug'=>'required|string|unique:products,slug,'.$id,
@@ -139,7 +154,11 @@ class ProductController extends Controller
             'image.mimes' => 'The image must be a file of type: jpeg, jpg, png.',
         ]);
 
-
+        if($request->hasfile('image')){
+            $imageName= Carbon::now()->timestamp. rand(1, 99) .';.'.$request->image->extension();
+            $request->file('image')->storeAs('images',$imageName);
+            // $model->image = $imageName;
+        }     
         $product = Product::findOrFail($id);
         $product->update([
             'name' => $request->name,
@@ -149,10 +168,10 @@ class ProductController extends Controller
             'regular_price' => $request->regular_price,
             'sale_price' => $request->sale_price,
             'quantity' => $request->quantity,
-            'image' => $request->hasFile('image') ? $request->file('image')->store('products') : $product->image,
+            'image' => $request->hasFile('image') ? $imageName : $product->image,
         ]);
 
-        return redirect()->back()->with('meesage','Product updated successfully!');
+        return redirect()->back()->with('message','Product updated successfully!');
         
         
     }
@@ -164,6 +183,6 @@ class ProductController extends Controller
     {
         $product = Product::findOrFail($id);
         $product->delete();
-        return redirect()->back()->with('meesage','Product deleted successfully!');
+        return redirect()->back()->with('message','Product deleted successfully!');
     }
 }

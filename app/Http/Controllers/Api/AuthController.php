@@ -11,11 +11,12 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\DB;
+use Session;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
-
 
 class AuthController extends Controller
 {
+     use AuthenticatesUsers;
      public function uloginauth(Request $request)
     {
         try {
