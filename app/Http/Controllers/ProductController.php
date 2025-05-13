@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Modesl\Product;
+use App\Models\Product;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
@@ -16,11 +16,7 @@ class ProductController extends Controller
     public function index(Request $request)
     {
         $products = Product::all();  
-            return response()->json([
-                'status' => true,
-                'message' => 'Products retrieved successfully',
-                'data' => $products
-            ], 200);
+        return view('product.list',['products'=>$products]);
     }
 
     /**
@@ -28,7 +24,7 @@ class ProductController extends Controller
      */
     public function create(Request $request)
     {
-        return response()->json(['status' => true,'message'=>'Add new product!'], 200);   
+        return view('product.add');
     }
 
     /**
@@ -36,7 +32,7 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(), [
+        $validated = $request->validate([
             'name' => 'required|string|max:255',
             'slug'=>'required|string|unique:products,slug',
             'short_description'=>'nullable|string|max:500',
@@ -77,15 +73,9 @@ class ProductController extends Controller
         ]);
 
 
-        if ($validator->fails()) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Validation error',
-                'errors' => $validator->errors()
-            ], 422);
-        }
+        
         $product = Product::create($validated);
-        return response()->json(['status' => true,'message' => 'Product created successfully', 'result'=>$product], 201);
+        return redirect()->back()->with('meesage','Product created successfully!');
     }
 
     /**
@@ -94,7 +84,7 @@ class ProductController extends Controller
     public function show(Request $request,string $id)
     {
         $product = Product::findOrFail($id);
-        return response()->json(['status' => true,'message' => 'Product found successfully','result'=>$product ], 200);
+        return view('product.show',['product'=>$product]);
     }
 
     /**
@@ -103,8 +93,7 @@ class ProductController extends Controller
     public function edit(Request $request,string $id)
     {
         $product = Product::findOrFail($id);    
-        return response()->json(['status' => true,'message' => 'Product found successfully','result'=>$product ], 200);
-       
+        return view('product.edit', ['product'=>$product]);
 
     }
 
@@ -113,7 +102,7 @@ class ProductController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $validator = Validator::make($request->all(), [
+        $validated = $request->validate([
             'name' => 'required|string|max:255',
             'slug'=>'required|string|unique:products,slug,'.$id,
             'short_description'=>'nullable|string|max:500',
@@ -150,13 +139,6 @@ class ProductController extends Controller
             'image.mimes' => 'The image must be a file of type: jpeg, jpg, png.',
         ]);
 
-        if ($validator->fails()) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Validation error',
-                'errors' => $validator->errors()
-            ], 422);
-        }
 
         $product = Product::findOrFail($id);
         $product->update([
@@ -170,11 +152,8 @@ class ProductController extends Controller
             'image' => $request->hasFile('image') ? $request->file('image')->store('products') : $product->image,
         ]);
 
-        return response()->json([
-            'status' => true,
-            'message' => 'Product updated successfully',
-            'result' => $product
-        ], 200);
+        return redirect()->back()->with('meesage','Product updated successfully!');
+        
         
     }
 
@@ -185,10 +164,6 @@ class ProductController extends Controller
     {
         $product = Product::findOrFail($id);
         $product->delete();
-
-        return response()->json([
-            'status' => true,
-            'message' => 'Product deleted successfully'
-        ], 204);
+        return redirect()->back()->with('meesage','Product deleted successfully!');
     }
 }
